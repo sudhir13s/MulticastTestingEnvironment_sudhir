@@ -28,7 +28,7 @@ curl "http://172.18.0.23:8080/?block=172.18.0.21" >> node3.txt 2>&1
 
 
 # wait for things to settle down.
-sleep 20
+sleep 10
 
 # now simulate node 1 overtaking node 2, so the line is now  2 -- 1 -- 3
 
@@ -46,7 +46,7 @@ curl "http://172.18.0.23:8080/?unblock=172.18.0.21&block=172.18.0.22"  >> node3.
 
 
 # wait for things to settle down
-sleep 20
+sleep 10
 
 
 # stop EVERYONE and remove instances.
