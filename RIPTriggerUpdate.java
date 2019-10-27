@@ -62,14 +62,14 @@ public class RIPTriggerUpdate implements Runnable {
                 // let 'er rip
                 socket.send(packet);
                 RoutingTable.isTriggerUpdate = false;
-                System.out.println("RIPTriggerUpdate: Trigger update sent.");
+                System.out.println("RIPTriggerUpdate: Trigger update set to false.");
             }
         }
     }
 
     @Override
     public void run() {
-        System.out.println("RIPTriggerUpdate: RIP Trigger update called.");
+//        System.out.println("RIPTriggerUpdate: RIP Trigger update called.");
         try {
             SendTriggerUpdate();
         } catch (IOException e) {

@@ -10,7 +10,7 @@ public class RIPReceiver implements Runnable {
     private int multicastPort = 5520;
 
     RIPReceiver() throws UnknownHostException {
-        this(InetAddress.getByName("230.230.230.230"), 5520);
+        this(InetAddress.getByName("224.0.0.9"), 5520);
     }
 
     RIPReceiver(String multicastIp, int port) {
@@ -30,11 +30,10 @@ public class RIPReceiver implements Runnable {
     private void JoinMulticastGroup() throws IOException {
         multicastSocket = new MulticastSocket(this.multicastPort);
         multicastSocket.joinGroup(this.multicastAddress);
-        System.out.println("RIPReceiver: Joined multicast group on port " + this.multicastPort);
+//        System.out.println("RIPReceiver: Joined multicast group on port " + this.multicastPort);
     }
 
-    private void ReceiveRIPData() {
-        // any condition??
+    private void ReceiveRIPData() throws InterruptedException {
         while (true) {
             try {
                 int bufferSize = 504;
@@ -42,21 +41,15 @@ public class RIPReceiver implements Runnable {
 //                byte[] bufferData = hexStringToByteArray("0202000000020001c0a83803ffffff00c0a8380300000001c0a83804ffffff00c0a8380400000001");
                 DatagramPacket receiverPacket = new DatagramPacket(bufferData, bufferData.length);
                 multicastSocket.receive(receiverPacket);
-//                System.out.println("RIPReceiver: received packets***");
 
                 byte[] data = receiverPacket.getData();
                 RIPDataProcessor ripDataProcessor = new RIPDataProcessor(data);
                 Thread ripDataProcessorThread = new Thread(ripDataProcessor, "RIP Data Processor");
                 ripDataProcessorThread.start();
-
-                // give us a way out if needed
-//                if("EXIT".equals(msg)) {
-//                    System.out.println("No more messages. Exiting : "+msg);
-//                    break;
-//                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            Thread.sleep(1000);
         }
     }
 
@@ -70,7 +63,11 @@ public class RIPReceiver implements Runnable {
         //join to multicast group.
         JoinMulticastGroup();
         //receive data.
-        ReceiveRIPData();
+        try {
+            ReceiveRIPData();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         //leave multicast group.
         LeaveMulticastGroup();
     }
@@ -96,13 +93,13 @@ public class RIPReceiver implements Runnable {
     }
 
     public static void main(String[] args) {
-        RIPReceiver server = null;
-        try {
-            server = new RIPReceiver();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        assert server != null;
-        server.ReceiveRIPData();
+//        RIPReceiver server = null;
+//        try {
+//            server = new RIPReceiver();
+//        } catch (UnknownHostException e) {
+//            e.printStackTrace();
+//        }
+//        assert server != null;
+//        server.ReceiveRIPData();
     }
 }

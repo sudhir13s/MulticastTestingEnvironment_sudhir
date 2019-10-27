@@ -6,7 +6,7 @@ import java.util.HashMap;
 public class LunarRover {
 
     final static int PORT = 5520;
-    final static String MULTICAST_ADDRESS = "230.231.232.233";
+    final static String MULTICAST_ADDRESS = "224.0.0.9";
     static HashMap<InetAddress, InetAddress> MAPPING = new HashMap<>();
     static Integer SLEEP_TIME = 5000;
 

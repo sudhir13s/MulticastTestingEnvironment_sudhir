@@ -16,7 +16,7 @@ public class RIPSender implements Runnable {
 //    byte[] buffer;
 
     public RIPSender(int nodeNum) throws UnknownHostException {
-        this(InetAddress.getByName("230.230.230.230"), 5520, nodeNum);
+        this(InetAddress.getByName("224.0.0.9"), 5520, nodeNum);
     }
 
     public RIPSender(String multicastIp, int port, int nodeNum) {
@@ -35,7 +35,7 @@ public class RIPSender implements Runnable {
         this.nodeNum = nodeNum;
     }
 
-    private synchronized void SendUDPPacket() throws IOException {
+    private void SendUDPPacket() throws IOException {
         // get multicast group
         DatagramSocket socket = new DatagramSocket();
         InetAddress group = this.multicastAddress;
@@ -60,6 +60,8 @@ public class RIPSender implements Runnable {
             packet = new DatagramPacket(data, data.length, group, this.port);
             // let 'er rip
             socket.send(packet);
+            RoutingTable rt = new RoutingTable();
+            rt.PrintRoutingTable();
 //            System.out.println("RIPSender: UDP packet sent.");
         }
     }

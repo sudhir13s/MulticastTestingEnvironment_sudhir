@@ -12,18 +12,18 @@ public class RIPDataProcessor implements Runnable {
         this.offset = 0;
     }
 
-    private void ProcessInputRIPData() {
+    private synchronized void ProcessInputRIPData() {
         //received raw data.
+        boolean isTriggerUpdate = false;
         boolean isRouteChanged = false;
         RoutingTable rt = new RoutingTable();
         ByteBuffer byteBuffer = ByteBuffer.wrap(this.receivedBytes);
         byteBuffer.order(ByteOrder.nativeOrder());
 
-        synchronized (RoutingTable.routeEntriesLock) {
-            try {
-                RIP rip = new RIP();
-                rip = rip.RIPDecodeData(this.receivedBytes, this.offset, this.receivedBytes.length);
-
+        try {
+            RIP rip = new RIP();
+            rip = rip.RIPDecodeData(this.receivedBytes, this.offset, this.receivedBytes.length);
+            synchronized (RoutingTable.routeEntriesLock) {
                 Iterator<RIPEntry> iterator = rip.ripEntries.iterator();
                 while (iterator.hasNext()) {
                     RIPEntry entry = iterator.next();
@@ -35,20 +35,21 @@ public class RIPDataProcessor implements Runnable {
                         isRouteChanged = true;
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+                // if route table updated.
+                if (isRouteChanged) {
+                    System.out.println("RIPDataProcessor: Routing table updated.");
+                    // print routing table.
+                    rt.PrintRoutingTable();
+                    // update special flag to trigger update.
+                    isTriggerUpdate = true;
+                }
             }
-            // if route table updated.
-            if (isRouteChanged) {
-                // update special flag to trigger update.
-                RoutingTable.isTriggerUpdate = true;
-                System.out.println("RIPDataProcessor: Routing table updated.");
-                // print routing table.
-                rt.PrintRoutingTable();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         // if RoutingTable.isTriggerUpdate flag is set, send trigger update.
-        if (RoutingTable.isTriggerUpdate) {
+        if (isTriggerUpdate) {
+            System.out.println("RIPDataProcessor: RIP Trigger update called.");
             Thread ripTriggerUpdate = new Thread(new RIPTriggerUpdate(LunarRover.MULTICAST_ADDRESS, LunarRover.PORT), "RIP Trigger Update");
             ripTriggerUpdate.start();
         }

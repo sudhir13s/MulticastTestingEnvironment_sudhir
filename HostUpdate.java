@@ -10,11 +10,13 @@ public class HostUpdate implements Runnable {
     private InetAddress nextHopAddress;
     private InetAddress subnetMask;
     String hostsAddress = "10.0.0.0";
+//    boolean isTriggerUpdate = false;
 
     HostUpdate(String[] hosts, InetAddress nextHopAddress, InetAddress subnetMask) {
         this.hosts = hosts;
         this.nextHopAddress = nextHopAddress;
 //        this.subnetMask = subnetMask;
+//        this.isTriggerUpdate = false;
         try {
             this.subnetMask = InetAddress.getByName("255.255.255.0");
         } catch (UnknownHostException e) {
@@ -50,6 +52,7 @@ public class HostUpdate implements Runnable {
     }
 
     private synchronized void UpdateHostEntriesInRoutingTable() {
+        boolean isTriggerUpdate = false;
         if (RoutingTable.routeEntries.isEmpty()) {
             synchronized (RoutingTable.routeEntriesLock) {
                 boolean isRouteChanged = false;
@@ -68,11 +71,12 @@ public class HostUpdate implements Runnable {
                     System.out.println("HostUpdate: Routing table updated.");
                     rt.PrintRoutingTable();
                     // update special flag to trigger update.
-                    RoutingTable.isTriggerUpdate = true;
+                    isTriggerUpdate = true;
                 }
             }
             // if RoutingTable.isTriggerUpdate flag is set, send trigger update.
-            if (RoutingTable.isTriggerUpdate) {
+            if (isTriggerUpdate) {
+                System.out.println("HostUpdate: RIP Trigger update called.");
                 Thread ripTriggerUpdate = new Thread(new RIPTriggerUpdate(LunarRover.MULTICAST_ADDRESS, LunarRover.PORT), "RIP Trigger Update");
                 ripTriggerUpdate.start();
             }

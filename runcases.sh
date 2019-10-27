@@ -9,25 +9,27 @@
 
 #start rover 1 and output all to node1.txt
 date -jn >> node1.txt
-docker run --cap-add=NET_ADMIN --net rovernet --ip 172.18.0.21 javaapptest 1 >> node1.txt 2>&1 &
+# docker run --cap-add=NET_ADMIN --net nodenet --ip 172.18.0.21 javaapptest 1 >> node1.txt 2>&1 &
+docker run -it -p 8080:8080 --cap-add=NET_ADMIN --net nodenet --ip 172.18.0.21 javaapptest 1 >> node1.txt 2>&1 &
 
 #start rover 2 and output all to node2.txt
 date -jn >> node2.txt
-docker run --cap-add=NET_ADMIN --net rovernet --ip 172.18.0.22 javaapptest 2 >> node2.txt 2>&1 &
+# docker run --cap-add=NET_ADMIN --net nodenet --ip 172.18.0.22 javaapptest 2 >> node2.txt 2>&1 &
+docker run -it -p 8081:8080 --cap-add=NET_ADMIN --net nodenet --ip 172.18.0.22 javaapptest 2 >> node2.txt 2>&1 &
 # note that rover 2 can talk to everyone.
 
 #start rover 3 and output all to node3.txt
 date -jn >> node3.txt
-docker run --cap-add=NET_ADMIN --net rovernet --ip 172.18.0.23 javaapptest 3 >> node3.txt 2>&1 &
+# docker run --cap-add=NET_ADMIN --net nodenet --ip 172.18.0.23 javaapptest 3 >> node3.txt 2>&1 &
+docker run -it -p 8082:8080 --cap-add=NET_ADMIN --net nodenet --ip 172.18.0.23 javaapptest 3 >> node3.txt 2>&1 &
 
 
-
-sleep 10
+sleep 5
 
 #make sure node 1 can't see node 3
-curl "http://172.18.0.21:8080/?block=172.18.0.23" >> node1.txt 2>&1 
+curl "http://localhost:8080/?block=172.18.0.23" >> node1.txt 2>&1 
 #make sure node 3 can't see node 1
-curl "http://172.18.0.23:8080/?block=172.18.0.21" >> node3.txt 2>&1
+curl "http://localhost:8082/?block=172.18.0.21" >> node3.txt 2>&1
 
 
 # wait for things to settle down.

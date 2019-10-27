@@ -78,7 +78,7 @@ public class RoutingTable {
                             nextHopInfo.interfaceId = RoutingTable.InterfaceID;
                         }
                         routeEntries.put(destinationAddress, nextHopInfo);
-//                        System.out.println("RoutingTable: Route table update for " + destinationAddress + ": " + nextHopInfo.nextHopAddress);
+                        System.out.println("RoutingTable: Different Route table update for " + destinationAddress + ": " + nextHopInfo.nextHopAddress + ": " + nextHopInfo.hopCount);
                         isRouteChanged = true;
                     }
                 }
