@@ -41,7 +41,7 @@ public class RIPSender implements Runnable {
             // let 'er rip
             RIPReceiver.SOCKET.send(packet);
         }
-        System.out.println("RIPSender: 10 sec - send update.");
+//        System.out.println("RIPSender: 10 sec - send update.");
         RoutingTable rt = new RoutingTable();
         rt.PrintRoutingTable();
 //        }
@@ -49,11 +49,11 @@ public class RIPSender implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("RIPSender: RIP sender started");
+//        System.out.println("RIPSender: RIP sender started");
         while (true) {
             try {
                 SendUDPPacket();
-                Thread.sleep(10000);
+                Thread.sleep(5000);
             } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
             }

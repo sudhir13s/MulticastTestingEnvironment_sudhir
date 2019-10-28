@@ -36,7 +36,7 @@ public class RIPReceiver implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("RIPReceiver: RIP Receiver started");
+//        System.out.println("RIPReceiver: RIP Receiver started");
         while (true) {
             ReceiveUDPPacket();
         }

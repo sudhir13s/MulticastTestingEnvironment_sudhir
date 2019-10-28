@@ -60,7 +60,7 @@ public class HostUpdate implements Runnable {
                 Integer hopCount = 0;
                 NextHopInfoTable nextHopInfo = new NextHopInfoTable(this.subnetMask, map.getValue(), interfaceId, hopCount);
                 nextHopInfo.metricChanged = true;
-                System.out.println("HostUpdate: calling updateRoutingTable");
+//                System.out.println("HostUpdate: calling updateRoutingTable");
 
                 RoutingTable.routeEntries.put(map.getKey(), nextHopInfo);
                 isRouteChanged = true;
@@ -74,8 +74,9 @@ public class HostUpdate implements Runnable {
 //                System.out.println("HostUpdate: Routing table updated.");
                 rt.PrintRoutingTable();
                 // if RoutingTable.isTriggerUpdate flag is set, send trigger update.
-                System.out.println("HostUpdate: RIP Trigger update called.");
+//                System.out.println("HostUpdate: RIP Trigger update called.");
                 RIPTriggerUpdate.isTriggerUpdate = true;
+                System.out.println("Starting Trigger update...");
                 Thread ripTriggerUpdate = new Thread(new RIPTriggerUpdate(LunarRover.MULTICAST_ADDRESS, LunarRover.MULTICAST_PORT), "RIP Trigger Update");
                 ripTriggerUpdate.start();
             }

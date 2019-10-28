@@ -40,7 +40,7 @@ public class RIPDataProcessor implements Runnable {
 
                     if (rt.updateRoutingTable(entry.getDestinationAddress(), nextHopInfo)) {
                         isRouteChanged = true;
-                        System.out.println("RIPDataProcessor: Received update.");
+//                        System.out.println("RIPDataProcessor: Received update.");
                     }
                 }
             }

@@ -73,7 +73,7 @@ public class RIPMulticastReceiver implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("RIPMulticastReceiver: RIP Multicast Receiver started");
+//        System.out.println("RIPMulticastReceiver: RIP Multicast Receiver started");
         try {
             ReceiveMulticastPacket();
         } catch (IOException e) {

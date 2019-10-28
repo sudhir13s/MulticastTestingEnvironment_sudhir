@@ -19,13 +19,14 @@ public class RoutingTable {
     }
 
     public synchronized void PrintRoutingTable() {
-        System.out.println("*****Printing routing table info*****");
-        System.out.println("===========================================================================================");
+        System.out.println("=================================================================================================");
+        System.out.println("\t\t\t\t *****Printing routing table info*****");
+        System.out.println("=================================================================================================");
         System.out.print("Destination \t");
         System.out.print("Subnet mask \t");
         System.out.print("Next hop \t");
         System.out.print("Interface \t");
-        System.out.print("Metric count \t");
+        System.out.print("Count \t");
         System.out.print("Flag \t");
         System.out.println("Time");
         NextHopInfoTable nextHopeInfo;
@@ -35,18 +36,15 @@ public class RoutingTable {
             System.out.print(nextHopeInfo.subnetMask + "\t");
             System.out.print(nextHopeInfo.nextHopAddress + "\t");
             System.out.print(nextHopeInfo.interfaceId + "\t\t");
-            System.out.print(nextHopeInfo.hopCount + "\t\t");
+            System.out.print(nextHopeInfo.hopCount + "\t");
             System.out.print(nextHopeInfo.metricChanged + "\t");
             System.out.println(nextHopeInfo.ttl);
         }
-//        System.out.println("");
-
 
 //        for (Map.Entry<InetAddress, InetAddress> route : LunarRover.MAPPING.entrySet()) {
 //            System.out.print(route.getKey() + "\t");
 //            System.out.println(route.getValue() + "\t");
 //        }
-        System.out.println("===========================================================================================");
         System.out.println("");
     }
 
@@ -59,9 +57,6 @@ public class RoutingTable {
     boolean updateRoutingTable(InetAddress destinationAddress, NextHopInfoTable nextHopInfo) {
         boolean isRouteChanged = false;
         // ip check - assumed it is correct.
-        // metric check
-
-//        if (nextHopInfo.hopCount < 16) {
         // if key exists.
         synchronized (RoutingTable.routeEntriesLock) {
             if (routeEntries.containsKey(destinationAddress)) {
@@ -77,7 +72,7 @@ public class RoutingTable {
                             nextHopInfo.interfaceId = rtInfo.interfaceId;
                             routeEntries.put(destinationAddress, nextHopInfo);
 //                            LunarRover.MAPPING.put(destinationAddress, nextHopInfo.nextHopAddress);
-                            System.out.println("RoutingTable: Route table update for " + destinationAddress + nextHopInfo.nextHopAddress + ": " + nextHopInfo.hopCount);
+//                            System.out.println("RoutingTable: Route table update for " + destinationAddress + nextHopInfo.nextHopAddress + ": " + nextHopInfo.hopCount);
                             isRouteChanged = true;
                         } else {
                             // just update the time.
@@ -97,8 +92,8 @@ public class RoutingTable {
                                     RoutingTable.InterfaceID = RoutingTable.InterfaceID + 1;
                                     nextHopInfo.interfaceId = RoutingTable.InterfaceID;
                                 }
-                                System.out.println("RoutingTable: Different Route table update for " + destinationAddress + ": from:  "
-                                        + rtInfo.nextHopAddress + " to: " + nextHopInfo.nextHopAddress + ": " + nextHopInfo.hopCount);
+//                                System.out.println("RoutingTable: Different Route table update for " + destinationAddress + ": from:  "
+//                                        + rtInfo.nextHopAddress + " to: " + nextHopInfo.nextHopAddress + ": " + nextHopInfo.hopCount);
                                 routeEntries.put(destinationAddress, nextHopInfo);
                                 LunarRover.MAPPING.put(destinationAddress, nextHopInfo.nextHopAddress);
 

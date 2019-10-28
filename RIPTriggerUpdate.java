@@ -64,7 +64,7 @@ public class RIPTriggerUpdate implements Runnable {
                     RoutingTable.routeEntries.put(route.getKey(), nextHopeInfo);
 
                     isTriggerUpdate = false;
-                    System.out.println("RIPTriggerUpdate: isTriggerUpdate - " + isTriggerUpdate);
+//                    System.out.println("RIPTriggerUpdate: isTriggerUpdate - " + isTriggerUpdate);
                 } else if (RoutingTable.routeEntries.size() <= 1) {
                     RIPEntry ripEntry = new RIPEntry(route.getKey(), nextHopeInfo.subnetMask, nextHopeInfo.nextHopAddress, nextHopeInfo.hopCount);
                     rip.ripEntries.add(ripEntry);
@@ -81,7 +81,7 @@ public class RIPTriggerUpdate implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("RIPTriggerUpdate: RIP Trigger update started.");
+//        System.out.println("RIPTriggerUpdate: RIP Trigger update started.");
         while (true)
             try {
                 SendTriggerUpdate();

@@ -28,16 +28,16 @@ public class GarbageCollector implements Runnable {
 //                    System.out.println("GarbageCollector: Inside hopCount > 0");
                     // means the route is not reachable. update expire entry or remove it.
                     if (nextHopeInfo.ttl == 0 && nextHopeInfo.hopCount == 16 && !nextHopeInfo.metricChanged) {
-                        System.out.println("GarbageCollector: Removing entry: " + route.getKey());
+//                        System.out.println("GarbageCollector: Removing entry: " + route.getKey());
                         iterator.remove();
                         LunarRover.MAPPING.remove(route.getKey());
-                    } else if ((instant.getEpochSecond() - nextHopeInfo.ttl > 10) && (nextHopeInfo.hopCount != 16)) {
+                    } else if ((instant.getEpochSecond() - nextHopeInfo.ttl > 5) && (nextHopeInfo.hopCount != 16)) {
                         nextHopeInfo.ttl = 0;
                         nextHopeInfo.hopCount = 16;
                         nextHopeInfo.metricChanged = true;
                         RoutingTable.routeEntries.put(route.getKey(), nextHopeInfo);
                         isTriggerUpdate = true;
-                        System.out.println("GarbageCollector: updated ttl time to zero for entry: " + route.getKey());
+//                        System.out.println("GarbageCollector: updated ttl time to zero for entry: " + route.getKey());
                     }
 //                    System.out.println("GarbageCollector: " + instant.getEpochSecond() + " - " + nextHopeInfo.ttl);
                 }
@@ -46,7 +46,7 @@ public class GarbageCollector implements Runnable {
 
         // if RoutingTable.isTriggerUpdate flag is set, send trigger update.
         if (isTriggerUpdate) {
-            System.out.println("GarbageCollector: RIP Trigger update called.");
+//            System.out.println("GarbageCollector: RIP Trigger update called.");
             rt.PrintRoutingTable();
             RIPTriggerUpdate.isTriggerUpdate = true;
             isTriggerUpdate = false;
