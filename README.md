@@ -30,15 +30,15 @@ Please follow the sample docker files (README-1.md) provided as part of this pro
 
 
 ### Description:
-The project is architech to devide the task between threads. Each thread execute a task. Below are the details-
+The project is architect to devide the task between threads. Each thread execute a task. Below are the details-
 
-a) LunarRover : This is the main program of a Rover which need to be executed. Other sub-programs/file/threads will be executed with this program.
-b) HostUpdate : The program to create and update subnet in a Rover.
-c) RIP Trigger Update: The program/thread to send trigger updates to multicast address.
-d) RIP Multicast Receiver: The program/thread to receive all multicast messages on a specific Rover.
-e) RIP Receiver: The program/thread to receive regular routing table updates.
-f) RIP Sender: The program/thread to send regular routing table updates on every 5 seconds. 
-g) Garbage Collector: The program/thread to clean/update the routing table of a Rover.
+    a) LunarRover : This is the main program of a Rover which need to be executed. Other sub-programs/file/threads will be executed with this program.
+    b) HostUpdate : The program to create and update subnet in a Rover.
+    c) RIP Trigger Update: The program/thread to send trigger updates to multicast address.
+    d) RIP Multicast Receiver: The program/thread to receive all multicast messages on a specific Rover.
+    e) RIP Receiver: The program/thread to receive regular routing table updates.
+    f) RIP Sender: The program/thread to send regular routing table updates on every 5 seconds. 
+    g) Garbage Collector: The program/thread to clean/update the routing table of a Rover.
 
 
 ### Execution of the program.<br>
@@ -49,12 +49,12 @@ g) Garbage Collector: The program/thread to clean/update the routing table of a 
 ### Sample Output of a Rover:
 A sample routing table of a rover.
 
-===========================================================================================
-                    *****Printing routing table info*****
-===========================================================================================
-Destination 	Subnet mask 	Next hop 	Interface 	Count 	Flag 	Time
-/10.0.1.0	/255.255.255.0	/172.18.0.21	0		    0		false	1572224223
-/10.0.2.0	/255.255.255.0	/172.18.0.22	1		    1		false	1572224215
-/0.0.0.0	/0.0.0.0	    /172.18.0.22	2		    1		false	1572224220
-/10.0.3.0	/255.255.255.0	/172.18.0.22	4		    2		false	1572224220
+    ===========================================================================================
+                        *****Printing routing table info*****
+    ===========================================================================================
+    Destination 	Subnet mask 	Next hop 	Interface 	Count 	Flag 	Time
+    /10.0.1.0	/255.255.255.0	/172.18.0.21	0		    0		false	1572224223
+    /10.0.2.0	/255.255.255.0	/172.18.0.22	1		    1		false	1572224215
+    /0.0.0.0	/0.0.0.0	    /172.18.0.22	2		    1		false	1572224220
+    /10.0.3.0	/255.255.255.0	/172.18.0.22	4		    2		false	1572224220
 
