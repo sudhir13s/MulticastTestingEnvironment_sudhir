@@ -1,6 +1,5 @@
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -52,32 +51,32 @@ public class HostUpdate implements Runnable {
     }
 
     private synchronized void UpdateHostEntriesInRoutingTable() {
-        boolean isTriggerUpdate = false;
+//        boolean isTriggerUpdate = false;
         if (RoutingTable.routeEntries.isEmpty()) {
-            synchronized (RoutingTable.routeEntriesLock) {
-                boolean isRouteChanged = false;
-                RoutingTable rt = new RoutingTable();
-                for (Map.Entry<InetAddress, InetAddress> map : LunarRover.MAPPING.entrySet()) {
-                    Integer interfaceId = 0;
-                    Integer hopCount = 0;
-                    NextHopInfoTable nextHopInfo = new NextHopInfoTable(this.subnetMask, map.getValue(), interfaceId, hopCount);
-                    System.out.println("HostUpdate: calling updateRoutingTable");
-                    if (rt.updateRoutingTable(map.getKey(), nextHopInfo)) {
-                        isRouteChanged = true;
-                    }
-                }
-                // if route table updated.
-                if (isRouteChanged) {
-                    System.out.println("HostUpdate: Routing table updated.");
-                    rt.PrintRoutingTable();
-                    // update special flag to trigger update.
-                    isTriggerUpdate = true;
-                }
+            boolean isRouteChanged = false;
+            RoutingTable rt = new RoutingTable();
+            for (Map.Entry<InetAddress, InetAddress> map : LunarRover.MAPPING.entrySet()) {
+                Integer interfaceId = 0;
+                Integer hopCount = 0;
+                NextHopInfoTable nextHopInfo = new NextHopInfoTable(this.subnetMask, map.getValue(), interfaceId, hopCount);
+                nextHopInfo.metricChanged = true;
+                System.out.println("HostUpdate: calling updateRoutingTable");
+
+                RoutingTable.routeEntries.put(map.getKey(), nextHopInfo);
+                isRouteChanged = true;
+
+//                if (rt.updateRoutingTable(map.getKey(), nextHopInfo)) {
+//
+//                }
             }
-            // if RoutingTable.isTriggerUpdate flag is set, send trigger update.
-            if (isTriggerUpdate) {
+            // if route table updated.
+            if (isRouteChanged) {
+//                System.out.println("HostUpdate: Routing table updated.");
+                rt.PrintRoutingTable();
+                // if RoutingTable.isTriggerUpdate flag is set, send trigger update.
                 System.out.println("HostUpdate: RIP Trigger update called.");
-                Thread ripTriggerUpdate = new Thread(new RIPTriggerUpdate(LunarRover.MULTICAST_ADDRESS, LunarRover.PORT), "RIP Trigger Update");
+                RIPTriggerUpdate.isTriggerUpdate = true;
+                Thread ripTriggerUpdate = new Thread(new RIPTriggerUpdate(LunarRover.MULTICAST_ADDRESS, LunarRover.MULTICAST_PORT), "RIP Trigger Update");
                 ripTriggerUpdate.start();
             }
         }

@@ -8,11 +8,11 @@ public class GarbageCollector implements Runnable {
     private void RemoveUnreachableRoutesFromRoutingTable() {
         NextHopInfoTable nextHopeInfo;
         boolean isTriggerUpdate = false;
+        RoutingTable rt = new RoutingTable();
 
-        synchronized (RoutingTable.routeEntriesLock) {
 //            System.out.println("In synchronized");
-            RoutingTable rt = new RoutingTable();
-            Iterator<Map.Entry<InetAddress, NextHopInfoTable>> iterator = RoutingTable.routeEntries.entrySet().iterator();
+        Iterator<Map.Entry<InetAddress, NextHopInfoTable>> iterator = RoutingTable.routeEntries.entrySet().iterator();
+//        synchronized (RoutingTable.routeEntriesLock) {
             while (iterator.hasNext()) {
                 Map.Entry<InetAddress, NextHopInfoTable> route = iterator.next();
                 nextHopeInfo = route.getValue();
@@ -25,28 +25,33 @@ public class GarbageCollector implements Runnable {
                 }
                 // remaining entries.
                 else if (nextHopeInfo.hopCount > 0) {
+//                    System.out.println("GarbageCollector: Inside hopCount > 0");
                     // means the route is not reachable. update expire entry or remove it.
-                    if (nextHopeInfo.ttl == 0 && nextHopeInfo.hopCount == 16) {
+                    if (nextHopeInfo.ttl == 0 && nextHopeInfo.hopCount == 16 && !nextHopeInfo.metricChanged) {
                         System.out.println("GarbageCollector: Removing entry: " + route.getKey());
                         iterator.remove();
-                    } else if (instant.getEpochSecond() - nextHopeInfo.ttl > 5) {
+                        LunarRover.MAPPING.remove(route.getKey());
+                    } else if ((instant.getEpochSecond() - nextHopeInfo.ttl > 10) && (nextHopeInfo.hopCount != 16)) {
                         nextHopeInfo.ttl = 0;
                         nextHopeInfo.hopCount = 16;
                         nextHopeInfo.metricChanged = true;
                         RoutingTable.routeEntries.put(route.getKey(), nextHopeInfo);
                         isTriggerUpdate = true;
-                        rt.PrintRoutingTable();
                         System.out.println("GarbageCollector: updated ttl time to zero for entry: " + route.getKey());
                     }
+//                    System.out.println("GarbageCollector: " + instant.getEpochSecond() + " - " + nextHopeInfo.ttl);
                 }
             }
-        }
+//        }
 
         // if RoutingTable.isTriggerUpdate flag is set, send trigger update.
         if (isTriggerUpdate) {
             System.out.println("GarbageCollector: RIP Trigger update called.");
-            Thread ripTriggerUpdate = new Thread(new RIPTriggerUpdate(LunarRover.MULTICAST_ADDRESS, LunarRover.PORT), "RIP Trigger Update");
-            ripTriggerUpdate.start();
+            rt.PrintRoutingTable();
+            RIPTriggerUpdate.isTriggerUpdate = true;
+            isTriggerUpdate = false;
+//            Thread ripTriggerUpdate = new Thread(new RIPTriggerUpdate(LunarRover.MULTICAST_ADDRESS, LunarRover.MULTICAST_PORT), "RIP Trigger Update");
+//            ripTriggerUpdate.start();
         }
     }
 
